@@ -1,0 +1,11 @@
+# MANAGEMENT HTTP SERVER 
+management:
+ contextPath: /admin
+ 
+# LOGGING
+logging:
+ level.com.stfciz.sandbox:  DEBUG
+ 
+# APPLICATION
+sandbox:
+ maxTimeout: 2000
