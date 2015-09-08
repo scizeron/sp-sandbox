@@ -23,4 +23,9 @@ public class SdxController {
   public SleepResponse sleep(@RequestParam(defaultValue="500", value="d") int delay) {
     return new SleepResponse(this.sbxService.sleep(delay));
   }
+  
+  @RequestMapping("/hello")
+  public String hello() {
+    return "Hi";
+  }
 }

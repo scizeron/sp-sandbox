@@ -80,5 +80,11 @@ public class SandboxApplicationTests {
     ResponseEntity<String> result = this.template.getForEntity(getAdminHost() + "/admin/health", String.class);
     Assert.assertThat(result.getStatusCode().is2xxSuccessful(), CoreMatchers.is(true));
   }
-	
+  
+  @Test
+  public void hello() {
+    Assert.assertThat(this.template.getForEntity(getHost() + "/hello", String.class).getStatusCode().is2xxSuccessful()
+        , CoreMatchers.is(true));
+  }
+
 }
