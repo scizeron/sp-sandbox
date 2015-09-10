@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -18,12 +19,27 @@ import com.stfciz.sandbox.configuration.SdxConfiguration;
 
 @Aspect
 @Component
-public class SdxServiceAsyncCaller extends AbtractSdxServiceProxy {
+public class SdxServiceTimeoutedCaller extends AbtractSdxServiceProxy {
+
+  /**
+   * 
+   * @author stfciz
+   *
+   * 9 sept. 2015
+   */
+  private static class WorkerThreadFactory implements ThreadFactory {
+    private int counter = 0;
+    private String prefix = "WorkThread";
+
+    public Thread newThread(Runnable r) {
+      return new Thread(r, prefix + "-" + ++counter);
+    }
+ }
 
   @Autowired
   private SdxConfiguration sdxConfiguration;
   
-  private ExecutorService executorService = Executors.newCachedThreadPool();
+  private ExecutorService executorService = Executors.newCachedThreadPool(new SdxServiceTimeoutedCaller.WorkerThreadFactory());
   
   @Override
   public int getOrder() {

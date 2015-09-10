@@ -4,12 +4,15 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestTemplate;
 
 import com.stfciz.sandbox.api.SleepResponse;
@@ -19,6 +22,8 @@ import com.stfciz.sandbox.api.SleepResponse;
 @WebIntegrationTest({"server.port=0", "management.port=0"})
 public class SandboxApplicationTests {
 
+  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  
   private RestTemplate template = new TestRestTemplate();
   
   @Value("${local.server.port}")
@@ -86,5 +91,31 @@ public class SandboxApplicationTests {
     Assert.assertThat(this.template.getForEntity(getHost() + "/hello", String.class).getStatusCode().is2xxSuccessful()
         , CoreMatchers.is(true));
   }
+  
+  @Test
+  public void sequentialComputing() {
+    int delay = 1000;
+    int tasks = 5;
+    StopWatch sw = new StopWatch(); 
+    sw.start();
+    ResponseEntity<String> result = this.template.getForEntity(getHost() + String.format("/compute?t=%d&d=%d", tasks, delay), String.class);
+    sw.stop();
+    logger.info(result.getBody());
+    Assert.assertThat(result.getStatusCode().is2xxSuccessful(), CoreMatchers.is(true));
+    Assert.assertThat(sw.getTotalTimeMillis() > delay * 2,  CoreMatchers.is(true));
+  }
 
+  @Test
+  public void parallelComputing() {
+    int delay = 1000;
+    int tasks = 10;
+    StopWatch sw = new StopWatch(); 
+    sw.start();
+    ResponseEntity<String> result = this.template.getForEntity(getHost() + String.format("/compute?t=%d&d=%d&p=true", tasks, delay), String.class);
+    sw.stop();
+    logger.info(result.getBody());
+    Assert.assertThat(result.getStatusCode().is2xxSuccessful(), CoreMatchers.is(true));
+    Assert.assertThat(sw.getTotalTimeMillis() < delay * 2,  CoreMatchers.is(true));
+  }
+  
 }
