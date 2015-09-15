@@ -3,6 +3,9 @@ package com.stfciz.sandbox.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  * @author stfciz
@@ -11,17 +14,25 @@ import java.util.List;
  */
 public class ParallelComputingRequestBody {
   
-  int delayMin = 0;
+  private int delayMin;
   
-  int delayMax = 1000;
+  private int delayMax;
   
-  int delayStep = 100;
+  private int delayStep;
   
-  boolean ascendingStep = true;
+  private boolean ascendingStep;
   
-  List<Integer> delays;
+  private List<Integer> delays;
 
-  public ParallelComputingRequestBody(int delayMin, int delayMax, int delayStep, boolean ascendingStep) {
+  /**
+   * 
+   * @param delayMin
+   * @param delayMax
+   * @param delayStep
+   * @param ascendingStep
+   */
+  @JsonCreator
+  public ParallelComputingRequestBody(@JsonProperty("delayMin") int delayMin, @JsonProperty("delayMax") int delayMax, @JsonProperty("delayStep") int delayStep, @JsonProperty("ascendingStep") boolean ascendingStep) {
     this.delayMin = delayMin;
     this.delayMax = delayMax;
     this.delayStep = delayStep;
@@ -29,47 +40,40 @@ public class ParallelComputingRequestBody {
     
     initDelays();
   }
-  
-  public ParallelComputingRequestBody() {
-    initDelays();
-  }
-  
+ 
   /**
    * 
    */
   private void initDelays() {
     this.delays = new ArrayList<Integer>();
-    int current = delayMin;
-    while (current < delayMax) {
-      if (ascendingStep) {
-        delays.add(current);  
+    int current = this.delayMin;
+    while (current < this.delayMax) {
+      if (this.ascendingStep) {
+        this.delays.add(current);  
       } else {
-        delays.add(current, 0);
+        this.delays.add(current, 0);
       }
-      current = current + this.delayStep;
+      current += this.delayStep;
     }
   }
 
   public int getDelayMin() {
-    return delayMin;
+    return this.delayMin;
   }
 
   public int getDelayMax() {
-    return delayMax;
+    return this.delayMax;
   }
 
   public int getDelayStep() {
-    return delayStep;
+    return this.delayStep;
   }
 
   public boolean isAscendingStep() {
-    return ascendingStep;
+    return this.ascendingStep;
   }
 
   public List<Integer> getDelays() {
     return this.delays;
   }
-
-  
-
 }

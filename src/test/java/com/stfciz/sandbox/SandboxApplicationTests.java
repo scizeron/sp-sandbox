@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stfciz.sandbox.api.ParallelComputingRequestBody;
 import com.stfciz.sandbox.api.SleepResponse;
 
@@ -120,10 +121,11 @@ public class SandboxApplicationTests {
   }
   
   @Test
-  public void parallelComputingOK() {
+  public void parallelComputingOK() throws Exception {
     StopWatch sw = new StopWatch(); 
     sw.start();
-    ParallelComputingRequestBody requestBody = new ParallelComputingRequestBody(50,500,100,true);
+    ParallelComputingRequestBody requestBody = new ParallelComputingRequestBody(50,500,100, true);
+    logger.info(new ObjectMapper().writeValueAsString(requestBody));
     ResponseEntity<String> result = this.template.postForEntity(getHost() + "/plcompute", requestBody, String.class);
     logger.info(result.getBody());
     Assert.assertThat(result.getStatusCode().is2xxSuccessful(), CoreMatchers.is(true));
@@ -134,7 +136,7 @@ public class SandboxApplicationTests {
   public void parallelComputingKO() {
     StopWatch sw = new StopWatch(); 
     sw.start();
-    ParallelComputingRequestBody requestBody = new ParallelComputingRequestBody(-200,500,100,true);
+    ParallelComputingRequestBody requestBody = new ParallelComputingRequestBody(-200,500,100, true);
     ResponseEntity<String> result = this.template.postForEntity(getHost() + "/plcompute", requestBody, String.class);
     logger.info(result.getBody());
     Assert.assertThat(result.getStatusCode().is5xxServerError(), CoreMatchers.is(true));

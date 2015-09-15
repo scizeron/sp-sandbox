@@ -39,7 +39,9 @@ public abstract class AbtractSdxServiceProxy implements Ordered {
    */
   @Around("sdxServiceInvocationPoint()")
   public Object around(ProceedingJoinPoint pjp) throws Throwable {
-    LOGGER.debug("Proceed {} ...", getTargetName(pjp));
+    LOGGER.debug("Proceed {} with args {} ...", getTargetName(pjp), pjp.getArgs());
+    
+    
     return aroundInternal(pjp);
   }
   

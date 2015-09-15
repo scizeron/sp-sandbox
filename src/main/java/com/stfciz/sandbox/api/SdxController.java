@@ -1,5 +1,6 @@
 package com.stfciz.sandbox.api;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +32,8 @@ import com.stfciz.sandbox.service.SdxServiceException;
  */
 @RestController
 public class SdxController {
+  
+  private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
   @Autowired
   private SdxConfiguration sdxConfiguration;
@@ -83,6 +88,8 @@ public class SdxController {
   public DeferredResult<String> parallelComputing(@RequestBody ParallelComputingRequestBody request) {
     DeferredResult<String> result = new DeferredResult<String>();
     ExecutorService executorService = Executors.newFixedThreadPool(request.getDelays().size() <= 10 ? request.getDelays().size() : Math.max(10, request.getDelays().size() / 2));
+    
+    LOGGER.info("delays : {}", Arrays.toString(request.getDelays().toArray(new Integer[request.getDelays().size()])));
     
     StopWatch sw = new StopWatch();
     sw.start();
