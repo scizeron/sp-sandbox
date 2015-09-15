@@ -8,4 +8,4 @@ logging:
  
 # APPLICATION
 sandbox:
- maxTimeout: 2000
+ maxTimeout: 5000

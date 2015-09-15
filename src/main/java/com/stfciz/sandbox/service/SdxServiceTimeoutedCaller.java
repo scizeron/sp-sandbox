@@ -60,12 +60,19 @@ public class SdxServiceTimeoutedCaller extends AbtractSdxServiceProxy {
           try {
             return (String) pjp.proceed();
           } catch (Throwable e) {
+            LOGGER.error("Service error", e);
+            if (e instanceof SdxServiceException) {
+              throw (SdxServiceException) e;
+            } 
             throw new SdxServiceTechnicalException(e);
           }
         }
       }).get(this.sdxConfiguration.getMaxTimeout(), TimeUnit.MILLISECONDS);
 
     } catch (InterruptedException | ExecutionException e) {
+      if (e.getCause() != null && e.getCause() instanceof SdxServiceException) {
+        throw (SdxServiceException) e.getCause();
+      }
       throw new SdxServiceTechnicalException(e);
     } catch (TimeoutException e) {
       throw new SdxServiceTimeoutException(this.sdxConfiguration.getMaxTimeout());

@@ -6,7 +6,7 @@ package com.stfciz.sandbox.service;
  *
  * 25 juin 2015
  */
-public class SdxServiceTechnicalException extends RuntimeException {
+public class SdxServiceTechnicalException extends SdxServiceException {
 
   /**
    * 

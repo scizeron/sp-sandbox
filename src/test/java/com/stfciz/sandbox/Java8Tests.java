@@ -66,8 +66,6 @@ public class Java8Tests {
      * CancellationException - if the computation was cancelled
      * CompletionException - if this future completed exceptionally or a completion computation threw an exception 
      */
-    
-    //result.join();
   }
 
   /**

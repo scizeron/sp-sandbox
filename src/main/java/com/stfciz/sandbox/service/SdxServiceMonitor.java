@@ -26,8 +26,8 @@ public class SdxServiceMonitor extends AbtractSdxServiceProxy {
     try {
       result = pjp.proceed();
       
-    } catch(SdxServiceTechnicalException e) {
-      LOGGER.error("A technical error has occured", e);
+    } catch(SdxServiceException e) {
+      LOGGER.error("A service error has occured", e);
       throw e;
     } catch(Exception e) {
       LOGGER.error("A unexpected error has occured", e);

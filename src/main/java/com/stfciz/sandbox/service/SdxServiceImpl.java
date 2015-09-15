@@ -8,19 +8,26 @@ import org.springframework.stereotype.Service;
  * 
  * @author stfciz
  *
- * 25 juin 2015
+ *         25 juin 2015
  */
 @Service
 public class SdxServiceImpl implements SdxService<String> {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
   @Override
-  public String sleep(long delay) {
+  public String sleep(long delay) throws SdxServiceException {
     try {
-      Thread.sleep(delay);
-      String msg = String.format("OK after a %d ms sleeping time", delay);
-      LOGGER.info(msg);
-      return msg;
+      if (delay > 0) {
+        Thread.sleep(delay);
+        String msg = String.format("OK after a %d ms sleeping time", delay);
+        LOGGER.info(msg);
+        return msg;
+      } else {
+        Thread.sleep(Math.abs(delay));
+        throw new SdxServiceFunctionalException(String.format(
+            "The delay \"%d\" must be > 0", delay));
+      }
     } catch (InterruptedException e) {
       throw new RuntimeException("sleep execution error", e);
     }

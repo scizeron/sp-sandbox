@@ -17,6 +17,6 @@ public interface SdxService<T> {
    * @return
    * @throws SdxServiceTimeoutException
    */
-  T sleep(long delay) throws SdxServiceTimeoutException;
-  
+  T sleep(long delay) throws SdxServiceException;
+
 }
